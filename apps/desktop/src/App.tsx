@@ -1,5 +1,6 @@
 import { Ui } from "ui";
 import ConfigEditor from "./ConfigEditor";
+import MhfDatEditor from "./MhfDatEditor";
 import QuestEditor from "./QuestEditor";
 import QuestlistEditor from "./QuestlistEditor";
 
@@ -8,7 +9,9 @@ function App() {
     <ConfigEditor>
       <QuestEditor>
         <QuestlistEditor>
-          <Ui />
+          <MhfDatEditor>
+            <Ui />
+          </MhfDatEditor>
         </QuestlistEditor>
       </QuestEditor>
     </ConfigEditor>

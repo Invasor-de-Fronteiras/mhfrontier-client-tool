@@ -28,7 +28,8 @@ import {
   LayoutNavbarGroup,
   Select,
   useQuestlistEditor,
-  useConfig
+  useConfig,
+  useMhfDat
 } from "ui";
 import { useEffect, useMemo, useState } from "react";
 import { IconType } from "react-icons";
@@ -54,6 +55,7 @@ export function Layout() {
   const nav = useNavigate();
   const { isLoadedFile, handleSaveQuest, reFrontier } = useEditor();
   const { isLoadedQuestlists, questlistSubmit, importQuestlists } = useQuestlistEditor();
+  const { isLoadedDatFile, handleEncrypt, handleLoadDat, mhfdatSubmit } = useMhfDat();
   const { config } = useConfig();
   const [tool, setTool] = useState('QuestEditor');
 
@@ -226,9 +228,49 @@ export function Layout() {
         }
       ];
 
+      if (tool === 'MhfDat') return [
+        {
+          name: "File",
+          options: [
+            { name: "Load Mhdat", icon: BsUpload, disabled: false, isSubmit: false, onClick: handleLoadDat },
+            {
+              name: "Save Mhdat",
+              icon: BsSave,
+              isSubmit: false,
+              disabled: !isLoadedDatFile,
+              onClick: mhfdatSubmit
+            },
+            {
+              name: "Encrypt Mhdat",
+              icon: FiRefreshCw,
+              isSubmit: false,
+              disabled: !isLoadedDatFile,
+              onClick: handleEncrypt
+            }
+          ],
+        },
+        {
+          name: "MhfDat Editor",
+          options: [
+            {
+              name: "Items",
+              icon: BsFillWalletFill,
+              disabled: !isLoadedDatFile,
+              uri: "/dat/items",
+            },
+            {
+              name: "Templates",
+              icon: BsFillWalletFill,
+              disabled: !isLoadedDatFile,
+              uri: "/dat/template",
+            },
+          ]
+        },
+      ];
+
       return [];
     },
-    [isLoadedFile, handleSaveQuest, questlistSubmit, tool, isLoadedQuestlists]
+    [isLoadedFile, isLoadedDatFile, handleSaveQuest, questlistSubmit, tool, isLoadedQuestlists]
   );
 
   const route = useMemo(
@@ -247,6 +289,7 @@ export function Layout() {
   const tools = useMemo(() => ([
     { value: 'QuestEditor', label: 'QuestEditor' },
     { value: 'QuestlistEditor', label: 'QuestlistEditor' },
+    { value: 'MhfDat', label: 'MhfDat' },
   ]), []);
 
   const seletedTool = useMemo(() => tools.find(v => v.value === tool), [tools, tool]);

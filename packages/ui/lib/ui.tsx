@@ -6,6 +6,8 @@ import { ExportToQuestlistTab } from "./tabs/ExportToQuestlistTab";
 import { FlagsTab } from "./tabs/FlagsTab";
 import { ForcedEquipmentTab } from "./tabs/ForcedEquipementTab";
 import { LoadQuestTab } from "./tabs/LoadQuestTab";
+import { ItemsTab } from "./tabs/mhfdat/ItemsTab";
+import { DatTemplateTab } from "./tabs/mhfdat/TemplateTab";
 import { MonstersTab } from "./tabs/MonstersTab";
 import { QuestInfoTab } from "./tabs/QuestInfoTab";
 import { LoadQuestlistTab } from "./tabs/questlist/LoadQuestlistTab";
@@ -36,6 +38,8 @@ export function Ui() {
         <Route path="/supply-items" element={<SupplyItemTab />} />
         <Route path="/questlist-load" element={<LoadQuestlistTab />} />
         <Route path="/questlist" element={<QuestlistTab />} />
+        <Route path="/dat/items" element={<ItemsTab />} />
+        <Route path="/dat/template" element={<DatTemplateTab />} />
       </Route>
     </Routes>
   );

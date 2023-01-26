@@ -8,12 +8,13 @@ use crate::utils::wrap_result;
 pub struct ReFrontierPayload {
     filepath: String,
     re_frontier_path: String,
+    options: Vec<String>
 }
 
 #[tauri::command]
 pub fn re_frontier(event: String) -> String {
     let result = || -> Result<String> {
-        let mut payload = serde_json::from_str::<ReFrontierPayload>(&event)?;
+        let payload = serde_json::from_str::<ReFrontierPayload>(&event)?;
 
         let is_windows = cfg!(target_os = "windows");
 
@@ -23,10 +24,12 @@ pub fn re_frontier(event: String) -> String {
             ));
         }
 
+        let mut options: Vec<String> = vec![payload.filepath];
+        options.extend(payload.options);
         let output = Command::new("./ReFrontier/ReFrontier.exe")
-            .args([payload.filepath])
+            .args(options)
             .output()?;
-
+        
         let message = String::from_utf8(output.stdout).unwrap_or(String::from("Output invalid"));
         let result = serde_json::json!({ "message": message });
         Ok(result.to_string())

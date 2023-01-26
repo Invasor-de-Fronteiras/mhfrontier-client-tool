@@ -8,9 +8,11 @@ mod quest;
 mod questlist;
 mod re_frontier;
 mod utils;
+mod dat;
 
 use db::{db_import_questlist, db_update_quest, get_config};
 use quest::{export_quest_info, read_quest_file, save_quest_file};
+use dat::{read_dat_file, save_dat_file};
 use questlist::{read_all_questlist, read_all_questlist_old, read_questinfo, save_all_questlists};
 use re_frontier::re_frontier;
 use tauri;
@@ -26,6 +28,8 @@ async fn main() {
             read_all_questlist_old,
             read_questinfo,
             save_all_questlists,
+            read_dat_file,
+            save_dat_file,
             re_frontier,
             db_import_questlist,
             db_update_quest,
