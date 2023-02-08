@@ -8,7 +8,6 @@ import { VERSION } from "../constants";
 import { useLocation } from "react-router-dom";
 import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 import { useTheme } from "../useTheme";
-import { useEditor } from "../context/EditorContext";
 
 interface ContextState {
   isOpen: boolean;
@@ -20,15 +19,14 @@ const context = createContext({} as ContextState);
 // 40 42 54
 export function Layout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(true);
-  const { form, handleSaveQuest } = useEditor();
 
   return (
     <context.Provider value={{ isOpen, onToggle: () => setIsOpen(!isOpen) }}>
       <form
         className="w-full h-full flex flex-row dark:bg-[#282a36] dark:text-zinc-400"
-        onSubmit={form.handleSubmit((data) => {
-          handleSaveQuest(data);
-        })}
+        onSubmit={() => {
+          /* do nothing */
+        }}
       >
         {isOpen && (
           <div

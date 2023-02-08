@@ -1,21 +1,9 @@
 import {
-  BsFillGeoFill,
   BsFillWalletFill,
-  BsFillAwardFill,
-  BsInfoCircle,
-  BsMinecartLoaded,
   BsSave,
-  BsArrowUp,
-  BsUmbrella,
   BsUpload,
-  BsQuestion,
 } from "react-icons/bs";
-import { SiMonster } from "react-icons/si";
-import { IoMdFlag } from "react-icons/io";
-import { GiAbdominalArmor, GiFishingLure } from "react-icons/gi";
 import { FiRefreshCw } from "react-icons/fi";
-import { HiTemplate } from "react-icons/hi";
-import { VscSymbolString } from "react-icons/vsc";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useEditor } from "./context/EditorContext";
 
@@ -28,11 +16,11 @@ import {
   LayoutNavbarGroup,
   Select,
   useQuestlistEditor,
-  useConfig,
   useMhfDat
 } from "ui";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
+import { useTool } from "./context/ToolContext";
 
 interface NavbarItem {
   name: string;
@@ -53,11 +41,10 @@ interface NavbarGroup {
 export function Layout() {
   const location = useLocation();
   const nav = useNavigate();
-  const { isLoadedFile, handleSaveQuest, reFrontier } = useEditor();
-  const { isLoadedQuestlists, questlistSubmit, importQuestlists } = useQuestlistEditor();
+  const { isLoadedFile, handleSaveQuest } = useEditor();
+  const { isLoadedQuestlists, questlistSubmit } = useQuestlistEditor();
   const { isLoadedDatFile, handleEncrypt, handleLoadDat, mhfdatSubmit } = useMhfDat();
-  const { config } = useConfig();
-  const [tool, setTool] = useState('QuestEditor');
+  const { tool, setTool } = useTool();
 
   useEffect(() => {
     if (tool === 'QuestEditor') {
@@ -69,165 +56,6 @@ export function Layout() {
 
   const groups = useMemo<NavbarGroup[]>(
     () => {
-      if (tool === 'QuestEditor') return [
-        {
-          name: "File",
-          options: [
-            { name: "Load Quest", icon: BsUpload, disabled: false, uri: "/" },
-            {
-              name: "Save Quest",
-              icon: BsSave,
-              isSubmit: true,
-              disabled: !isLoadedFile,
-            },
-            {
-              name: "Export quest",
-              icon: BsUpload,
-              isSubmit: true,
-              disabled: !isLoadedFile,
-              uri: 'export-quest-info'
-            }
-          ],
-        },
-        {
-          name: "Editor",
-          options: [
-            {
-              name: "Quest Information",
-              icon: BsInfoCircle,
-              disabled: !isLoadedFile,
-              uri: "/quest-info",
-            },
-            {
-              name: "Strings",
-              icon: VscSymbolString,
-              disabled: !isLoadedFile,
-              uri: "/strings",
-            },
-            {
-              name: "Monsters",
-              icon: SiMonster,
-              disabled: !isLoadedFile,
-              uri: "/monsters",
-            },
-            {
-              name: "Small Monsters",
-              icon: SiMonster,
-              disabled: !isLoadedFile,
-              uri: "/small-monsters",
-            },
-            {
-              name: "Forced Equipment",
-              icon: GiAbdominalArmor,
-              disabled: !isLoadedFile,
-              uri: "/equipment",
-            },
-            {
-              name: "Supply Items",
-              icon: BsFillWalletFill,
-              uri: "/supply-items",
-              disabled: !isLoadedFile,
-            },
-            {
-              name: "Rewards",
-              icon: BsFillAwardFill,
-              disabled: !isLoadedFile,
-              uri: "/rewards"
-            },
-            {
-              name: "Flags",
-              icon: IoMdFlag,
-              disabled: !isLoadedFile,
-              uri: "/flags"
-            },
-            {
-              name: "Gathering",
-              icon: BsMinecartLoaded,
-              disabled: !isLoadedFile || true,
-            },
-            {
-              name: "Map Data",
-              icon: BsFillGeoFill,
-              disabled: !isLoadedFile || true,
-            },
-            {
-              name: "Objects",
-              icon: BsUmbrella,
-              disabled: !isLoadedFile || true,
-            },
-            {
-              name: "Fishing",
-              icon: GiFishingLure,
-              disabled: !isLoadedFile || true,
-            }
-          ],
-        },
-        {
-          name: "Advanced",
-          options: [
-            {
-              name: "ReFrontier",
-              icon: FiRefreshCw,
-              disabled: false,
-              onClick: reFrontier
-            },
-            {
-              name: "Map Position",
-              icon: BsFillGeoFill,
-              uri: "/map-position",
-              disabled: false,
-            },
-            {
-              name: "Templates",
-              icon: HiTemplate,
-              disabled: !isLoadedFile,
-              uri: "/apply-templates",
-            },
-            {
-              name: "Unknown",
-              icon: BsQuestion,
-              uri: "/unknown",
-              disabled: !isLoadedFile,
-            },
-          ],
-        },
-      ];
-
-      if (tool === 'QuestlistEditor') return [
-        {
-          name: "File",
-          options: [
-            { name: "Load Questlist", icon: BsUpload, disabled: false, uri: "/questlist-load" },
-            {
-              name: "Save Questlist",
-              icon: BsSave,
-              isSubmit: false,
-              disabled: !isLoadedQuestlists,
-              onClick: questlistSubmit
-            },
-            {
-              name: "Import Questlist",
-              icon: BsArrowUp,
-              isSubmit: false,
-              disabled: false,
-              onClick: importQuestlists,
-              hide: !config
-            }
-          ],
-        },
-        {
-          name: "Questlist Editor",
-          options: [
-            {
-              name: "Questlist",
-              icon: BsInfoCircle,
-              disabled: !isLoadedQuestlists,
-              uri: "/questlist",
-            }
-          ]
-        }
-      ];
-
       if (tool === 'MhfDat') return [
         {
           name: "File",
@@ -287,8 +115,6 @@ export function Layout() {
   );
 
   const tools = useMemo(() => ([
-    { value: 'QuestEditor', label: 'QuestEditor' },
-    { value: 'QuestlistEditor', label: 'QuestlistEditor' },
     { value: 'MhfDat', label: 'MhfDat' },
   ]), []);
 

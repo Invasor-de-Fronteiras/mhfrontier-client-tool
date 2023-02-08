@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { DatFile, MhfDatContextProvider } from "ui";
 import { open } from "@tauri-apps/api/dialog";
-import { copyFile } from "@tauri-apps/api/fs";
+import { copyFile, exists } from "@tauri-apps/api/fs";
 import { toast } from 'react-toastify';
 import { readDatFile, refrontier, saveDatFile } from "./events";
 
@@ -32,7 +32,7 @@ const prepareMetaFile = async (filepath: string) => {
   // const fileMetaExists =  await exists(`${filepath}.meta`);
   // if (!fileMetaExists) throw Error('Meta file not found');
 
-  await copyFile(`${filepath}.meta`, `${folderPath}/output/${filename}.meta`);
+  // await copyFile(`${filepath}.meta`, `${folderPath}/output/${filename}.meta`);
 }
 
 function MhfDatEditor({ children }: MhfDatEditorProps) {
