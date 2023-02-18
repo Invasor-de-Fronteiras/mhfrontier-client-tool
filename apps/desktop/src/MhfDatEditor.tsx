@@ -2,10 +2,9 @@ import { useState } from "react";
 
 import { DatFile, MhfDatContextProvider } from "ui";
 import { open } from "@tauri-apps/api/dialog";
-import { copyFile, exists } from "@tauri-apps/api/fs";
+import { copyFile, exists, createDir } from "@tauri-apps/api/fs";
 import { toast } from 'react-toastify';
 import { readDatFile, refrontier, saveDatFile } from "./events";
-
 
 interface MhfDatEditorProps {
   children: React.ReactNode;
@@ -21,18 +20,17 @@ const getOutputPath = (filepath: string): string => {
 const prepareMetaFile = async (filepath: string) => {
   const folderPath = filepath.substring(0, filepath.lastIndexOf("\\"));
   const filename = filepath.substring(filepath.lastIndexOf("\\"));
-  console.log('filename: ', filename);
-  console.log('folderPath: ', folderPath);
 
+  await createDir(`${folderPath}/output`, { recursive: true });
   await copyFile(`output/${filename}`, `${folderPath}/output/${filename}`);
 
-  // const fileMetaOutputExists = await exists(`${folderPath}/output/${filename}.meta`);
-  // if (fileMetaOutputExists) return;
+  const fileMetaOutputExists = await exists(`${folderPath}/output/${filename}.meta`);
+  if (fileMetaOutputExists) return;
 
-  // const fileMetaExists =  await exists(`${filepath}.meta`);
-  // if (!fileMetaExists) throw Error('Meta file not found');
+  const fileMetaExists =  await exists(`${filepath}.meta`);
+  if (!fileMetaExists) throw Error('Meta file not found');
 
-  // await copyFile(`${filepath}.meta`, `${folderPath}/output/${filename}.meta`);
+  await copyFile(`${filepath}.meta`, `${folderPath}/output/${filename}.meta`);
 }
 
 function MhfDatEditor({ children }: MhfDatEditorProps) {

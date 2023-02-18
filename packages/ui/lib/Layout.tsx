@@ -47,10 +47,8 @@ export function Layout() {
   const { tool, setTool } = useTool();
 
   useEffect(() => {
-    if (tool === 'QuestEditor') {
+    if (tool === 'MhfDat') {
       nav('/');
-    } else {
-      nav('/questlist-load');
     }
   }, [tool]);
 

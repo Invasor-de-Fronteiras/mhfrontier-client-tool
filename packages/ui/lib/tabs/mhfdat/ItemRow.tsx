@@ -7,6 +7,7 @@ import { itemColors, itemIcons } from "../../utils";
 export interface ItemRow {
     index: number;
     name: string;
+    description: string;
     rare: number;
     max_inventory: number;
     icon: number;
@@ -51,6 +52,7 @@ export const ItemRow = ({ item, onSelect, onCompare }: ItemRowProps) => {
         >
             <td className="px-6 py-4">{item.index}</td>
             <td className="px-6 py-4">{item.name}</td>
+            <td className="px-6 py-4">{item.description}</td>
             <td className="px-6 py-4">{item.rare}</td>
             <td className="px-6 py-4">{item.max_inventory}</td>
             <td className="px-6 py-4">{itemIcon}</td>

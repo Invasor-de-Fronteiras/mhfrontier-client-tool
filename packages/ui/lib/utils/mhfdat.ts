@@ -44,6 +44,8 @@ export interface Item {
     item_props: ItemProps;
     name_ptr: number;
     name: string;
+    description: string;
+    description_ptr: number;
 }
 
 export interface DatFile {

@@ -169,7 +169,7 @@ export function LayoutNavbar({ children }: { children: React.ReactNode }) {
       <div className="border-b dark:border-slate-800 min-h-14 h-14 flex items-center justify-center text-center p-1">
         {isOpen && (
           <h2 className="font-semibold flex-1 text-center dark:text-white">
-            MHFrontier CQ Editor ({VERSION})
+            MHFrontier Client Editor ({VERSION})
           </h2>
         )}
         <div

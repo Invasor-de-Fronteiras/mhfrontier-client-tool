@@ -3,6 +3,7 @@ import { useWatch } from "react-hook-form";
 import { GroupCard } from "../../components/CardGroup";
 import { InputField } from "../../components/Input";
 import { SelectField } from "../../components/Select";
+import { TextAreaField } from "../../components/TextArea";
 import { UnknownField } from "../../components/UnknownFields";
 import { useMhfDat } from "../../context/MhfDatContext";
 import { itemColors, itemIcons } from "../../utils";
@@ -54,13 +55,20 @@ export function ItemEdit({ itemIndex }: ItemEditProps) {
                 isClearable
                 onClearValue={0}
                 control={form.control}
-                name={`items.${itemIndex}.item_props.icon`}
+                name={`items.${itemIndex}.item_props.color`}
             />
             <InputField
                 label="Max inventory"
                 type="number"
                 className="col-span-2"
                 name={`items.${itemIndex}.item_props.max_inventory`}
+                control={form.control}
+            />
+            <TextAreaField
+                label="Description"
+                type="string"
+                className="col-span-2"
+                name={`items.${itemIndex}.description`}
                 control={form.control}
             />
         </GroupCard>

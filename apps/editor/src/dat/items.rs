@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::file::reader::{CustomReader, FileReader};
 use crate::file::writer::{CustomWriter, FileWriter};
 
-use super::offsets::{ITEM_NAMES_PTR, ITEM_PROPS_PTR};
+use super::offsets::{ITEM_DESCRIPTION_PTR, ITEM_NAMES_PTR, ITEM_PROPS_PTR};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[repr(C)]
@@ -53,14 +53,16 @@ pub struct Item {
     pub item_id: u32,
     pub item_props: ItemProps,
     pub name_ptr: u32,
-    pub name: String
+    pub name: String,
+    pub description: String,
+    pub description_ptr: u32,
 }
 
 impl Item {
-    
     fn read_by_id(reader: &mut FileReader, item_id: u32) -> std::io::Result<Self> {
         let item_prop_ptr = ITEM_PROPS_PTR + size_of::<ItemProps>() as u32 * item_id;
         let item_name_ptr = ITEM_NAMES_PTR + 4 * item_id;
+        let item_description_ptr = ITEM_DESCRIPTION_PTR + 4 * item_id;
         reader.seek_start(item_prop_ptr as u64)?;
         let item_props = reader.read_struct::<ItemProps>()?;
         reader.seek_start(item_name_ptr as u64)?;
@@ -68,20 +70,25 @@ impl Item {
         reader.seek_start(name_ptr as u64)?;
         let name = reader.read_string()?;
 
+        reader.seek_start(item_description_ptr as u64)?;
+        let description_ptr = reader.read_u32()?;
+        reader.seek_start(description_ptr as u64)?;
+        let description = reader.read_string()?;
+
         Ok(Item {
             item_id,
             item_props,
             name,
-            name_ptr
+            name_ptr,
+            description,
+            description_ptr,
         })
     }
-
 }
 
 pub type Items = Vec<Item>;
 
 impl CustomReader for Items {
-
     fn read(reader: &mut FileReader) -> std::io::Result<Self> {
         let mut items: Vec<Item> = vec![];
 
@@ -106,20 +113,24 @@ impl CustomWriter for Items {
             writer.write_u32(&mut item.name_ptr)?;
         }
 
+        writer.seek_start(ITEM_DESCRIPTION_PTR as u64)?;
+        for item in self.into_iter() {
+            writer.write_u32(&mut item.description_ptr)?;
+        }
+
         Ok(0)
     }
-    
 }
 
 pub struct ItemName {
     item_id: u32,
-    name: String
+    name: String,
+    description: String,
 }
 
 pub type ItemNames = Vec<ItemName>;
 
 impl CustomReader for ItemNames {
-
     fn read(reader: &mut FileReader) -> std::io::Result<Self> {
         let mut items: Vec<ItemName> = vec![];
         let total = reader.read_u32()?;
@@ -127,47 +138,61 @@ impl CustomReader for ItemNames {
         for _ in 0..total {
             let item_id = reader.read_u32()?;
             let name = reader.read_string()?;
-            items.push(ItemName { item_id, name });
+            let description = reader.read_string()?;
+
+            items.push(ItemName {
+                item_id,
+                name,
+                description,
+            });
         }
 
         Ok(items)
     }
 }
 
-pub fn write_extra_item_names(writer: &mut FileWriter, value: &mut Items, original: &mut Items, extra_items: &mut ItemNames) -> std::io::Result<u64> {
+pub fn write_extra_item_names(
+    writer: &mut FileWriter,
+    value: &mut Items,
+    original: &mut Items,
+    extra_items: &mut ItemNames,
+) -> std::io::Result<u64> {
     let mut items: ItemNames = vec![];
 
     for item in value.into_iter() {
-        if original[item.item_id as usize].name != item.name {
+        if original[item.item_id as usize].name != item.name
+            || original[item.item_id as usize].description != item.description
+        {
             items.push(ItemName {
                 item_id: item.item_id,
-                name: item.name.clone()
+                name: item.name.clone(),
+                description: item.description.clone(),
             });
         }
     }
 
     for item in extra_items {
-        let exists = items
-            .iter()
-            .find(|a| a.item_id == item.item_id);
+        let exists = items.iter().find(|a| a.item_id == item.item_id);
 
         if let None = exists {
             items.push(ItemName {
                 item_id: item.item_id,
-                name: item.name.clone()
+                name: item.name.clone(),
+                description: item.description.clone(),
             });
         }
     }
 
     let length = items.len() as u32;
     writer.write_u32(&length)?;
-    
+
     for item in items {
         writer.write_u32(&item.item_id)?;
         value[item.item_id as usize].name_ptr = writer.current_position()? as u32;
         writer.write_string(&item.name)?;
+        value[item.item_id as usize].description_ptr = writer.current_position()? as u32;
+        writer.write_string(&item.description)?;
     }
 
     Ok(writer.current_position()?)
 }
-
