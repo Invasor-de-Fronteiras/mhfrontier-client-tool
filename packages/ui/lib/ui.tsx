@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
 import { ItemsTab } from "./tabs/mhfdat/ItemsTab";
 import { DatTemplateTab } from "./tabs/mhfdat/TemplateTab";
+import { MonstersTab } from "./tabs/mhfemd/MonstersTab";
 
 export function Ui() {
   return (
@@ -11,6 +12,7 @@ export function Ui() {
         <Route path="/" element={<ItemsTab />} />
         <Route path="/dat/items" element={<ItemsTab />} />
         <Route path="/dat/template" element={<DatTemplateTab />} />
+        <Route path="/emd/monsters" element={<MonstersTab />} />
       </Route>
     </Routes>
   );

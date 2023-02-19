@@ -1,13 +1,16 @@
 import React from "react";
+import { Checkbox } from "../../components/Checkbox";
+import { SelectItemsHook } from "../../hooks/selectItems";
 import { ItemRow } from "./ItemRow";
 
 interface ItemsTableProps {
     items: ItemRow[];
     onSelect: (value: number | null) => void;
     onCompare: (value: number | null) => void;
+    selectItems: SelectItemsHook;
 }
 
-export function ItemsTable({ onSelect, onCompare, items }: ItemsTableProps) {
+export function ItemsTable({ onSelect, onCompare, items, selectItems }: ItemsTableProps) {
     return (
         <table
             aria-label="Quests"
@@ -16,6 +19,14 @@ export function ItemsTable({ onSelect, onCompare, items }: ItemsTableProps) {
             <caption>click on which item you want to edit or compare</caption>
             <thead className="text-xs uppercase">
                 <tr className="dark:text-white">
+                    <th role="columnheader" scope="col" className="px-6 py-4">
+                        <Checkbox
+                            name="selectAll"
+                            label=""
+                            onChange={selectItems.changeSelectedAll}
+                            value={selectItems.isSelectedAll}
+                        />
+                    </th>
                     <th role="columnheader" scope="col" className="px-6 py-4">
                         Position
                     </th>
@@ -49,6 +60,7 @@ export function ItemsTable({ onSelect, onCompare, items }: ItemsTableProps) {
                         item={item}
                         onCompare={onCompare}
                         onSelect={onSelect}
+                        selectItems={selectItems}
                     />
                 })}
             </tbody>

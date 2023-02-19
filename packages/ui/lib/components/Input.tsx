@@ -13,7 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const wrapOnChange = (type: string, onChange?: (...event: any[]) => void) => {
     if (type === 'number' && onChange) return (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(parseInt(e.target.value, 10))
+      onChange(parseFloat(e.target.value))
     }
 
     return onChange;

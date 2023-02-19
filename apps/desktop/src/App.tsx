@@ -1,16 +1,19 @@
 import { Ui } from "ui";
-import { ToolContextProvider } from "ui/lib/context/ToolContext";
 import ConfigEditor from "./ConfigEditor";
 import MhfDatEditor from "./MhfDatEditor";
+import MhfEmdEditor from "./MhfEmdEditor";
+import Tool from "./Tool";
 
 function App() {
   return (
     <ConfigEditor>
-      <ToolContextProvider>
+      <Tool>
         <MhfDatEditor>
-          <Ui />
+          <MhfEmdEditor>
+            <Ui />
+          </MhfEmdEditor>
         </MhfDatEditor>
-      </ToolContextProvider>
+      </Tool>
     </ConfigEditor>
   );
 }

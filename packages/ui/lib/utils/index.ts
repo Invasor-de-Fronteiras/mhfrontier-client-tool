@@ -5,3 +5,4 @@ export * from "./monsters";
 export * from "./maps";
 export * from "./util";
 export * from "./mhfdat";
+export * from "./mhfemd";

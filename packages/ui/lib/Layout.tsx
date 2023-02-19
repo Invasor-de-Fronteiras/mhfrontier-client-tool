@@ -21,6 +21,7 @@ import {
 import { useEffect, useMemo } from "react";
 import { IconType } from "react-icons";
 import { useTool } from "./context/ToolContext";
+import { useMhfEmd } from "./context/MhfEmdContext";
 
 interface NavbarItem {
   name: string;
@@ -44,6 +45,7 @@ export function Layout() {
   const { isLoadedFile, handleSaveQuest } = useEditor();
   const { isLoadedQuestlists, questlistSubmit } = useQuestlistEditor();
   const { isLoadedDatFile, handleEncrypt, handleLoadDat, mhfdatSubmit } = useMhfDat();
+  const { isLoadedEmdFile, handleEncryptEmd, handleLoadEmd, mhfemdSubmit } = useMhfEmd();
   const { tool, setTool } = useTool();
 
   useEffect(() => {
@@ -94,9 +96,43 @@ export function Layout() {
         },
       ];
 
+      if (tool === 'MhfEmd') return [
+        {
+          name: "File",
+          options: [
+            { name: "Load MhfEmd", icon: BsUpload, disabled: false, isSubmit: false, onClick: handleLoadEmd },
+            {
+              name: "Save MhfEmd",
+              icon: BsSave,
+              isSubmit: false,
+              disabled: !isLoadedEmdFile,
+              onClick: mhfemdSubmit
+            },
+            {
+              name: "Encrypt MhfEmd",
+              icon: FiRefreshCw,
+              isSubmit: false,
+              disabled: !isLoadedEmdFile,
+              onClick: handleEncryptEmd
+            }
+          ],
+        },
+        {
+          name: "MhfEmd Editor",
+          options: [
+            {
+              name: "Monsters",
+              icon: BsFillWalletFill,
+              disabled: !isLoadedEmdFile,
+              uri: "/emd/monsters",
+            },
+          ]
+        },
+      ];
+
       return [];
     },
-    [isLoadedFile, isLoadedDatFile, handleSaveQuest, questlistSubmit, tool, isLoadedQuestlists]
+    [isLoadedFile, isLoadedDatFile, isLoadedEmdFile, handleSaveQuest, questlistSubmit, tool, isLoadedQuestlists]
   );
 
   const route = useMemo(
@@ -114,6 +150,7 @@ export function Layout() {
 
   const tools = useMemo(() => ([
     { value: 'MhfDat', label: 'MhfDat' },
+    { value: 'MhfEmd', label: 'MhfEmd' },
   ]), []);
 
   const seletedTool = useMemo(() => tools.find(v => v.value === tool), [tools, tool]);

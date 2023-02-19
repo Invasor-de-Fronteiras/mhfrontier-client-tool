@@ -3,6 +3,8 @@ import { ComponentProps, useMemo } from "react";
 import { MdModeEdit } from "react-icons/md";
 import { BiGitCompare } from "react-icons/bi";
 import { itemColors, itemIcons } from "../../utils";
+import { Checkbox } from "../../components/Checkbox";
+import { SelectItemsHook } from "../../hooks/selectItems";
 
 export interface ItemRow {
     index: number;
@@ -18,6 +20,7 @@ interface ItemRowProps {
     item: ItemRow;
     onSelect: (value: number) => void;
     onCompare: (value: number) => void;
+    selectItems: SelectItemsHook;
 }
 
 export const ActionButton = ({ children, ...props }: ComponentProps<"button"> & { children: React.ReactNode }) => 
@@ -35,8 +38,9 @@ export const ActionButton = ({ children, ...props }: ComponentProps<"button"> & 
         {children}
     </button>;
 
-export const ItemRow = ({ item, onSelect, onCompare }: ItemRowProps) => {
+export const ItemRow = ({ item, onSelect, onCompare, selectItems }: ItemRowProps) => {
 
+    const isSelected = useMemo(() => selectItems.isItemSelected(item.index), [item, selectItems]);
     const itemIcon = useMemo(() => {
         const icon = itemIcons.find(v => v.value === item.icon);
         return icon?.label || `Icon ${item.icon}`;
@@ -48,8 +52,17 @@ export const ItemRow = ({ item, onSelect, onCompare }: ItemRowProps) => {
     }, [item.icon]);
 
     return <tr
-            className={classNames("hover:bg-emerald-300 cursor-pointer dark:text-white")}
+            className={classNames("hover:bg-gray-700 cursor-pointer dark:text-white")}
         >
+            
+            <td className="px-6 py-4">
+                <Checkbox
+                    name="selectAll"
+                    label=""
+                    onChange={() => selectItems.selectItem(item.index)}
+                    value={isSelected}
+                />
+            </td>
             <td className="px-6 py-4">{item.index}</td>
             <td className="px-6 py-4">{item.name}</td>
             <td className="px-6 py-4">{item.description}</td>
